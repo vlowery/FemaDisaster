@@ -5,14 +5,14 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "3856664024",
+    "hash" : "997954317",
     "id" : "98E4019E",
-    "lastKnownWriteTime" : 1588706565,
-    "last_content_update" : 1588706565100,
+    "lastKnownWriteTime" : 1588730978,
+    "last_content_update" : 1588730978912,
     "path" : "~/Documents/NYCDSA_Work/R/project2/global.R",
     "project_path" : "global.R",
     "properties" : {
-        "cursorPosition" : "2,0",
+        "cursorPosition" : "11,11",
         "scrollLine" : "0",
         "tempName" : "Untitled1"
     },
