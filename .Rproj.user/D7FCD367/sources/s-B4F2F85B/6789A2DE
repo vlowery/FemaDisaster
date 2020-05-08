@@ -14,7 +14,7 @@
     "properties" : {
         "cursorPosition" : "136,36",
         "last_setup_crc32" : "",
-        "scrollLine" : "130"
+        "scrollLine" : "0"
     },
     "read_only" : false,
     "read_only_alternatives" : [
