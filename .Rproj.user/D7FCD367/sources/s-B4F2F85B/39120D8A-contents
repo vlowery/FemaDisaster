@@ -1,0 +1,96 @@
+### R Midterm
+### Victoria Lowery
+### May 6, 2020
+
+# Question 1
+csv_filenames <- list.files("data", pattern="*.csv")
+# Question 2
+csv_filepaths <- paste0("./data/", csv_filenames)
+# Question 3
+load_data <- function(file_name){
+  data <- read.csv(file_name, header=TRUE, stringsAsFactors = FALSE)
+  return (data)
+}
+all_dfs = lapply(csv_filepaths, load_data)
+
+# Question 4
+library(tidyverse)
+for (i in 1:length(all_dfs)){
+  all_dfs[[i]] <- all_dfs[[i]] %>% select(START.DATE, END.DATE, OFFICE, PURPOSE, AMOUNT)
+}
+
+# Question 5
+# part a
+library(lubridate)
+clean_date_str <- function(date_str){
+  date_str <- as.Date(date_str, "%m/%d/%y")
+}
+
+for (i in 1:length(all_dfs)){
+  all_dfs[[i]]$START.DATE = clean_date_str(all_dfs[[i]]$START.DATE)
+  all_dfs[[i]]$END.DATE = clean_date_str(all_dfs[[i]]$END.DATE)
+}
+
+# part b
+format_df_dates <- function(df){
+  df$START.DATE <- as.Date(df$START.DATE, "%m/%d/%y")
+  df$END.DATE <- parse_date_time(df$END.DATE, "mdy")
+}
+
+for (i in 1:length(all_dfs)){
+  all_dfs[[i]]$START.DATE = format_df_dates(all_dfs[[i]]$START.DATE)
+  all_dfs[[i]]$END.DATE = format_df_dates(all_dfs[[i]]$END.DATE)
+}
+
+
+# Question 6
+format_df_amount <- function(amount_str){
+  amount_str <- gsub("$", "", amount_str) 
+  amount_str <- gsub(",", "", amount_str) 
+  amount_str <- as.numeric(amount_str)
+}
+
+for (i in 1:length(all_dfs)){
+  all_dfs[[i]]$AMOUNT = format_df_amount(all_dfs[[i]]$AMOUNT)
+}
+
+# Question 7
+df_tot <- do.call("rbind", all_dfs)
+
+# path = "https://nycdsastudent.s3.us-east-2.amazonaws.com/MidtermRDA/df_tot.RDS"
+# download.file(path,"./bail_out/df_tot.RDS", method="curl")
+# df_tot <- readRDS( "./bail_out/df_tot.RDS" )
+
+# Question 8
+df_tot %>% summarise(sum(ifelse(is.na(AMOUNT), 0, AMOUNT)))
+# 18,416,337,041
+
+# Question 9
+df_tot <- df_tot %>% mutate(COVERAGE.PERIOD = difftime(END.DATE, START.DATE, units="days")) 
+df_tot %>% select(COVERAGE.PERIOD) %>% mutate(COVERAGE.PERIOD = as.numeric(gsub(" days", "", COVERAGE.PERIOD))) %>% 
+  filter(COVERAGE.PERIOD > 0) %>% summarize(stats::sd(COVERAGE.PERIOD))
+
+# Question 10
+df_tot %>% filter(START.DATE >= "2010-01-01", START.DATE <= "2016-12-31", AMOUNT > 0) %>% 
+  mutate(Year = substr(START.DATE, 1, 4)) %>% group_by(Year) %>% 
+  summarize("TOTAL EXPENDITURES" = sum(ifelse(is.na(AMOUNT), 0, AMOUNT)))
+
+# Question 11
+clean_text_col <- function(string_list){
+  string_list <- gsub("\\d+", "", string_list)
+  string_list <- gsub("\\W&\\S", "", string_list)
+  string_list <- gsub("  ", " ", string_list)
+  string_list <- gsub("^ | $", "", string_list)
+  string_list <- toupper(enc2utf8(string_list))
+}
+df_tot <- df_tot %>% mutate(OFFICE.CLEAN = clean_text_col(OFFICE), PURPOSE.CLEAN = clean_text_col(PURPOSE))
+
+# Question 12
+top_office_purpose <- df_tot %>% group_by(OFFICE.CLEAN) %>% mutate("TOTAL.EXPENDITURES" = sum(ifelse(is.na(AMOUNT), 0, AMOUNT))) %>% 
+  arrange(desc(TOTAL.EXPENDITURES)) %>% mutate(Year = substr(START.DATE, 1, 4)) %>% filter(Year == 2016) %>% 
+  select(OFFICE.CLEAN, PURPOSE.CLEAN) %>% head(1)
+  
+OFFICE.NAME <- top_office_purpose$OFFICE.CLEAN
+PURPOSE.NAME <- top_office_purpose$PURPOSE.CLEAN
+
+

@@ -1,0 +1,4 @@
+"0","inspections %>% group_by(cuisine, boro) %>% summarise(frequency = n(), avg_score = mean(score), closed_percentage = (sum(action == ""closed"") + sum(action == ""re-closed""))/length(action)*100) %>% ungroup() %>% arrange(desc(frequency)) %>% group_by(boro) %>% top_n(20) %>% arrange(boro) %>% ggplot() + geom_col(aes(x=cuisine, y=closed_percentage)) + facet_grid(boro ~ .)
+"
+"2","Selecting by closed_percentage
+"

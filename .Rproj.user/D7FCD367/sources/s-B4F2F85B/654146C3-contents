@@ -1,0 +1,67 @@
+library(shiny)
+library(data.table)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+source("./helpers.R")
+
+# flights <- fread("./flights14.csv")
+dbname = "./flights.sqlite"
+tblname = "flights"
+
+ui <- fluidPage(
+  titlePanel("NYC Flights 2014"),
+  sidebarLayout(
+    sidebarPanel = sidebarPanel(
+      dateInput(inputId = "date",
+                label = "Date",
+                value = "2014-01-01",
+                min = "2014-01-01",
+                max = "2014-10-31"),
+      selectizeInput(inputId = "origin", 
+                     label = "Departure Airport",
+                     choices = NULL),
+      selectizeInput(inputId = "dest", 
+                     label = "Arrival Airport",
+                     choices = NULL)
+    ),
+    mainPanel = mainPanel(
+      plotOutput("delay")
+    )
+  )
+)
+
+
+server <- function(input, output, session) {
+  
+  conn <- dbConnector(session, dbname = dbname)
+  
+  flights_db <- reactive(dbGetData(conn = conn,
+                                   tblname = tblname,
+                                   month = month(input$date),
+                                   day = mday(input$date)))
+  
+  observeEvent(input$date, {
+    choices = unique(flights_db()[order(origin), origin])
+    updateSelectizeInput(session, inputId = "origin", choices = choices)
+  })
+  
+  observeEvent(input$origin, {
+    choices = unique(flights_db()[origin == input$origin, 
+                                  dest])
+    updateSelectizeInput(session, inputId = "dest", choices = choices)
+  })
+  
+  output$delay <- renderPlot({
+    flights_db()[origin == input$origin & dest == input$dest,
+               .(departure = mean(dep_delay), arrival = mean(arr_delay)),
+               by = carrier] %>%
+      gather(key = type, value = delay, departure, arrival) %>%
+      ggplot(aes(x = carrier, y = delay, fill = type)) +
+      geom_col(position = "dodge") + 
+      ggtitle("Average delay")
+  })
+}
+
+shinyApp(ui = ui, server = server)

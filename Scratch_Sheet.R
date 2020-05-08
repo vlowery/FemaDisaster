@@ -7,17 +7,26 @@ library(RColorBrewer)
 library("rnaturalearth")
 library("rnaturalearthdata")
 library(googleVis)
+library(lubridate)
+library(albersusa)
 data <- read.csv("./data/database.csv", stringsAsFactors = FALSE)
-data <- data %>% mutate(Year = substr(Declaration.Date, 7, 10))
+data <- data %>% mutate(Declaration.Date = as.Date(Declaration.Date, "%m/%d/%Y"), 
+                        Start.Date = as.Date(Start.Date, "%m/%d/%Y"),
+                        End.Date = as.Date(End.Date, "%m/%d/%Y"),
+                        Close.Date = as.Date(Close.Date, "%m/%d/%Y"),
+                        Year = format(Declaration.Date, '%Y'))
+
+state_name_df <- as.data.frame(usa_sf()) %>% select(abbr = iso_3166_2, name)
+left_join(data, state_name_df, by = c("State" = "abbr"))
 
 head(data)
 unique(data$Declaration.Type)
 
-data %>% mutate(Year = substr(Declaration.Date, 7, 10)) %>% group_by(State, Year) %>% filter(Disaster.Type=="Fire") %>% tally() #%>% arrange(desc(n))
+data %>% group_by(State, Year) %>% filter(Disaster.Type=="Fire") %>% tally() #%>% arrange(desc(n))
 
 ##### Graph showing the Yearly distribution of Disasters #####
-data %>% group_by(Year) %>% tally() %>% arrange(desc(n)) %>% ggplot(aes(x=Year, y=n)) + geom_col()
-
+data %>% group_by(Year) %>% tally() %>% arrange(desc(n)) %>% ggplot(aes(x=Year, y=n)) + geom_col(fill="#008080") + ylab("Emergency Count") + ggtitle("Total Emergency Count by Year")
+mean_yearly_emrg <- data %>% filter(Year != 2005, Year != 2020) %>% group_by(Year) %>% summarise(n = n()) %>% summarise(mean(n))
 ##### Graph showing the Yearly distribution of Individual Disasters #####
 data %>% group_by(Disaster.Type, Year) %>% tally() %>% ggplot(aes(x=Year, y=n)) + geom_col(aes(fill=Disaster.Type), position="dodge")
 data %>% filter(data$Disaster.Type == "Hurricane") %>% group_by(Year) %>% tally() %>% ggplot(aes(x=Year, y=n)) + geom_col(fill = "light blue")
@@ -46,7 +55,7 @@ plot(G3)
 
 # data[data$State == "AS", ]
 # 
-# states = map_data("state")
+states = map_data("state")
 # ggplot(data = states, aes(x = long, y = lat)) +
 #   geom_polygon(aes(group = group, fill = group))
 

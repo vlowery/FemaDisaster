@@ -1,0 +1,4 @@
+"0","head(inspections)
+"
+"0","inspections %>% group_by(cuisine) %>% summarise(frequency = n(), avg_score = mean(score)) %>% arrange(desc(frequency)) %>% head(20) %>% mutate(name = fct_reorder(cuisine, desc(avg_score))) %>% ggplot() + geom_col(aes(y=name, x=avg_score)) + ggtitle(""Top 20 Cuisines (freq. count) and Their Avg. Scores"")"
+"0",""

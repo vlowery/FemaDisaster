@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1588883192605.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1E0EC7BA",
+    "lastKnownWriteTime" : 1588623849,
+    "last_content_update" : 1588623849,
+    "path" : "~/Documents/NYCDSA_Work/Web_Scraping/Scrapy/second_attempt/bonapp/Bon_App/server.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "58,108",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
