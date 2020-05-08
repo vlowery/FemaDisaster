@@ -3,10 +3,11 @@
 function(input, output, session){
   
   output$totals_yearly <- renderPlot(
-    data %>% group_by(Year) %>% summarise(Count = n()) %>% ggplot(aes(x=Year, y=Count)) + 
-      geom_col(aes(fill=ifelse(Year == 2005|Year==2020, "#008080", "#ce412a"))) + 
+    data %>% group_by(Year, femaDeclarationString) %>% summarise(Count = length(unique(declarationDate))) %>% 
+      group_by(Year) %>% summarise(Total = n()) %>% ggplot(aes(x=Year, y=Total)) + 
+      geom_col(aes(fill=ifelse(Year == 1996|Year == 2011|Year==2020, "#008080", "#ce412a"))) + 
       ylab("Emergency Count") + ggtitle("Total Emergency Count by Year") + theme(legend.position = "none") + 
-      geom_text(aes(label = ifelse(Year == 2005|Year==2020, Count, "")),  vjust = -0.5) +
+      geom_text(aes(label = ifelse(Year == 1996|Year == 2011|Year==2020, Total, "")),  vjust = -0.5) +
       scale_x_continuous(breaks=seq(1950, max(data$Year), 5))
     ## ADD A BOX WITH DARKER COLORING, THEN ADD COLORING TO ZOOM GRAPH
   )
@@ -15,7 +16,7 @@ function(input, output, session){
     data %>% group_by(Year) %>% summarise(Count = n()) %>% ggplot(aes(x=Year, y=Count)) + 
       geom_col(aes(fill=ifelse(Year == 2005|Year==2020, "#008080", "#ce412a"))) + 
       ylab("Emergency Count") + ggtitle("Total Emergency Count, Zoomed in to <2,500 Cases") + theme(legend.position = "none") + 
-      coord_cartesian(ylim=c(0,2500)) + scale_x_continuous(breaks=seq(1950, max(data$Year), 5))
+      scale_x_continuous(breaks=seq(1950, max(data$Year), 5))
     ## ADD A BOX WITH ZOOM COLORING FROM YEARLY GRAPH
   )
   

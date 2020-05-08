@@ -12,13 +12,14 @@ library(ggthemes)
 # Load data
 data <- read.csv("./data/DisasterDeclarationsSummaries.csv", stringsAsFactors = FALSE)
 
-# Modify All Date Columns to Date Type, and Filter out US Territories
+# Modify All Date Columns to Date Type, Filter out US Territories, and Remove Duplicates
 data <- data %>% mutate(declarationDate = as.Date(declarationDate, "%Y-%m-%d"), 
                                incidentBeginDate = as.Date(incidentBeginDate, "%Y-%m-%d"),
                                incidentEndDate = as.Date(incidentEndDate, "%Y-%m-%d"),
                                disasterCloseoutDate = as.Date(disasterCloseoutDate, "%Y-%m-%d")) %>% 
                 rename("State_abbr" = state, "Year" = fyDeclared) %>% 
-                filter(!State_abbr %in% c("AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI"))
+                filter(!State_abbr %in% c("AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI")) %>% 
+                distinct(femaDeclarationString, designatedArea, .keep_all = TRUE)
 
 # Add State Names
 state_name_df <- as.data.frame(usa_sf()) %>% select(abbr = iso_3166_2, "State" = name)

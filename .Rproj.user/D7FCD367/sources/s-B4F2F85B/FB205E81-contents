@@ -93,9 +93,15 @@ states = map_data("state")
 # my_spatial_data <- merge(x = geometry, y = state_count, 
 #                          by = "State", all.x = TRUE)
 #####
+head(data)
+unique(data$designatedArea)
+length(unique(data$declarationRequestNumber))
+length(unique(data$femaDeclarationString))
+data %>% distinct(femaDeclarationString, designatedArea) %>% group_by(femaDeclarationString, designatedArea) %>% tally() %>% arrange(desc(n))
+data %>% distinct(femaDeclarationString, designatedArea) %>% filter(designatedArea == "Statewide") #%>% group_by(Year) %>% select(Year, incidentType) %>% arrange(desc(Year))#%>% tally()
+data %>% distinct(femaDeclarationString, designatedArea)
 
-
-
+length(unique(data$declarationDate))
 #####
 
 
