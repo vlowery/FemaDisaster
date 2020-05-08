@@ -99,7 +99,7 @@ length(unique(data$declarationRequestNumber))
 length(unique(data$femaDeclarationString))
 data %>% distinct(femaDeclarationString, designatedArea) %>% group_by(femaDeclarationString, designatedArea) %>% tally() %>% arrange(desc(n))
 data %>% distinct(femaDeclarationString, designatedArea) %>% filter(designatedArea == "Statewide") #%>% group_by(Year) %>% select(Year, incidentType) %>% arrange(desc(Year))#%>% tally()
-data %>% distinct(femaDeclarationString, designatedArea)
+data <- data %>% distinct(femaDeclarationString, designatedArea)
 
 length(unique(data$declarationDate))
 #####

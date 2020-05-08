@@ -26,12 +26,12 @@ state_name_df <- as.data.frame(usa_sf()) %>% select(abbr = iso_3166_2, "State" =
 data <- left_join(data, state_name_df, by = c("State_abbr" = "abbr"))
 
 # Create DF for State Totals Overall
-state_count <- data %>% group_by(State) %>% summarise("Total Emergencies" = n())
+state_count <- data %>% group_by(State) %>% summarise("Total Emergencies" = length(unique(femaDeclarationString)))
 
 # Create DT for Disaster Type Totals
-data1 <- data %>% group_by("Disaster Type" = incidentType) %>% summarise("Total" = n()) %>% arrange(desc(Total))
+data_tb <- data %>% group_by("Disaster Type" = incidentType) %>% summarise("Total" = length(unique(femaDeclarationString))) %>% arrange(desc(Total))
 
 # Est. Mean of all Year's Emergency Count
-mean_yearly_emrg <- data %>% filter(Year != 2005, Year != 2020) %>% group_by(Year) %>% summarise(n = n()) %>% summarise(mean(n))
+# mean_yearly_emrg <- data %>% filter(Year != 2005, Year != 2020) %>% group_by(Year) %>% summarise(n = n()) %>% summarise(mean(n))
 
 
