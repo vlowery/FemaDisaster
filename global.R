@@ -68,7 +68,7 @@ polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
 #   left_join(., polygon_df, by = c("State")) %>% st_sf() %>% ungroup()
 # 
 # # 4. Create shape file of US States
-# country_shape <- data %>% select(State) %>% unique() %>% left_join(., polygon_df, by = c("State")) %>% st_sf()
+country_shape <- data %>% select(State) %>% unique() %>% left_join(., polygon_df, by = c("State")) %>% st_sf()
 # 
 # # 5. Create the animation maps
 # year_anim <- tm_shape(country_shape) + tm_polygons() + tm_shape(year_count) +
