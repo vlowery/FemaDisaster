@@ -7,11 +7,11 @@ shinyUI(
         id = "tabs",
         menuItem("Introduction", tabName = "intro", icon = icon("info")),
         menuItem("Disaster Types", tabName = "disaster_types", icon = icon("car-crash")),
-        menuItem("Totals by Year", tabName = "years", icon = icon("calendar"), 
-                 menuSubItem("Overview", tabName = "overview_years"),
-                 menuSubItem("1996 Investigation", tabName = "1996"),
-                 menuSubItem("2011 Investigation", tabName = "2011"),
-                 menuSubItem("2020 Investigation", tabName = "2020")),
+        menuItem("Totals by Year", tabName = "overview_years", icon = icon("calendar")), 
+                 # menuSubItem("Overview", tabName = "overview_years"),
+                 # menuSubItem("1996 Investigation", tabName = "1996"),
+                 # menuSubItem("2011 Investigation", tabName = "2011"),
+                 # menuSubItem("2020 Investigation", tabName = "2020")),
         menuItem("Totals by State", tabName = "states", icon = icon("globe")),
         menuItem("Delays to be Recognized", tabName = "when", icon = icon("map")),
         menuItem("Assistance", tabName = "assistance", icon = icon("heartbeat")),
@@ -49,7 +49,7 @@ shinyUI(
                              of news channels and papers longer, they occur far less frequently than the average bad storm. Additionally, hurricanes come with a considerable 
                              amount of notice, unlike flash floods. Interestingly, a new category established this year, the 'biological disaster', is already ranked seventh 
                              place in total emergency declarations due to COVID-19."),
-                         box(width = 4, dataTableOutput("disasters_table"))
+                         box(width = 4, DT::dataTableOutput("disasters_table"))
                 ),
                 h2("What Constitutes an Emergency"),
                 fluidRow(
@@ -65,8 +65,8 @@ shinyUI(
                       p(tags$b("Terrorist:"), "September 11th, 2001 was actually coded as a 'Fire' emergency in New York, so the only recorded terrorist emergencies 
                         are first, the additional plane on 9/11 that struck the Pentagon in Virginia and second, the Boston Marathon bombings in 2013"),
                       p(tags$b("Tsunami, Typhoon, Volcano:"), "declared predominantly by Hawaii, one of the U.S.'s most coastal and exposed state")),
-                  box(width = 12, title = "A History of the U.S. Emergency", solidHeader = TRUE, status = "warning",
-                      p("This will elaborate on the history of declaring an emergency."))
+                  # box(width = 12, title = "A History of the U.S. Emergency", solidHeader = TRUE, status = "warning",
+                  #     p("This will elaborate on the history of declaring an emergency."))
                   ),
                   box(width = 3, radioButtons("radio1", label = h3("Select Disaster Type:"),
                                                      choices = sort(unique(data$incidentType)), 
@@ -85,24 +85,31 @@ shinyUI(
                     in fact double the previous year's count. And within the first five months of 2020, over 177 emergencies have been declared, mostly because of complications from COVID-19. 
                     Excluding these three years, the mean emergency count is ", round(mean_yearly_emrg), " per year.")),
                   fluidRow(
-                    box(width = 4, title = "REFRAMING BY TOTAL COUNTIES AFFECTED", collapsible = TRUE, collapsed = TRUE, status = "danger", solidHeader = TRUE, plotOutput("reframe")),
+                    box(width = 4, title = "REFRAMING BY TOTAL COUNTIES AFFECTED", collapsible = TRUE, collapsed = TRUE, status = "danger", solidHeader = TRUE, 
+                        plotOutput("reframe"), p(tags$b("Hurricane Katrina and COVID-19 drastically increase 2005 and 2020 respectively."))),
                     box(width = 4, "If we reframe our look to counting total individual counties affected by disasters rather than 
                     unique FEMA disaster IDs, which can cover one to hundreds of counties under one ID, we see two distinct years stand out. 
                         As this is an approximation for total citizens affected, it makes sense that the two stand out years are 2005, the year of Hurricane 
-                        Katrina, and 2020, as COVID-19 spreads far and wide throughout the country."))
+                        Katrina, and 2020, as COVID-19 spreads far and wide throughout the country.", br(), "Additional analysis exploring population count rather than FEMA ID counts 
+                        will be added to further identify the weight of each emergency by citizens compromised. This optimistically will balance the fact that Texas, a very large 
+                        state but with a smaller population density than say parts of New York or Florida, will possibly be more likely to expereince emergencies, however the 
+                        effects of certain disasters may affect far fewer than if the same disaster were to occur in another state.")),
+                  h2("What's Happening in 1996, 2011, and 2020"),
+                  fluidRow(
+                    box(width = 2, title = "1996", "For Texas, 1996 was a year of one fire after another. First in February, a particularly large grass fire burned out of control, 
+                        devastating not acres but miles of farms, homes, and land. Another particularly bad fire, Texas' Little Cypress Fire, was contained by April, 
+                        however many other fires continued to ignite. The state continued to burn into the hottest months of summer leading the President, George Bush, to declare a federal disaster in the state."),
+                    box(width = 5, htmlOutput("pie_1996")),
+                    box(width = 5, title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", plotOutput("map_1996"))),
+                  fluidRow(
+                    box(width = 2, title = "2011", "2011 broke many records, including the most destructive fire in Texas' history, the Bastrop County Complex fire. In total, Texas comprised 47% of all acreage burned in the United States in 2011[1].", br(), br(), h6("[1] Tripp, Leslie; Gallman, Stephanie (April 19, 2011). 'Arrest made in connection with Texas wildfire near Austin'. CNN.com. Retrieved 2011-04-18.")),
+                    box(width = 5, htmlOutput("pie_2011")),
+                    box(width = 5, title = "Distribution of Emergencies Declared, 2011", solidHeader = TRUE, status = "danger", plotOutput("map_2011"))),
+                  fluidRow(
+                    box(width = 2, title = "2020", "COVID-19 has overtaken nearly all of 2020's registered emergencies."),
+                    box(width = 5, htmlOutput("pie_2020")),
+                    box(width = 5, title = "Distribution of Emergencies Declared, 2020", solidHeader = TRUE, status = "danger", plotOutput("map_2020")))
                   )),
-        tabItem(tabName = "1996",
-                box(width = 5, htmlOutput("pie_1996")),
-                box(title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", plotOutput("map_1996"))
-                ),
-        tabItem(tabName = "2011", "Here I will discuss 2005.",
-                box(width = 5, htmlOutput("pie_2011")),
-                box(title = "Distribution of Emergencies Declared, 2011", solidHeader = TRUE, status = "danger", plotOutput("map_2011"))
-                ),
-        tabItem(tabName = "2020", "Here I discuss 2020.",
-                box(width = 5, htmlOutput("pie_2020")),
-                box(title = "Distribution of Emergencies Declared, 2020", solidHeader = TRUE, status = "danger", plotOutput("map_2020"))
-                ),
         tabItem(tabName = "states",
                 fluidPage(
                   fluidRow(h2("Total Emergencies by State")),
@@ -111,7 +118,7 @@ shinyUI(
                     belows shows Texas has far more emergencies than any other state. Texas has more 
                     emergencies than New York and California combined. Why is that?"),
                     box(title = "Total Emergencies by State, 1953 - 2020", width = 5, htmlOutput(width = "auto", "totals_map")),
-                  box(width=4, dataTableOutput("totals_table"))),
+                  box(width=4, DT::dataTableOutput("totals_table"))),
                   h2("What's Happening in States with Higher Counts?"),
                   fluidRow(
                     box(plotOutput(height = 700, "five_states")),
@@ -140,8 +147,9 @@ shinyUI(
                 h2("The Most Wide-Spread Disaster"),
                 ),
         tabItem(tabName = "conclusions", 
-                h2("Given The Findings:"),
-                
+                h2("What This Tells Us:"),
+                imageOutput("year_gif"),
+                plotOutput("corr_plot")
                 )
       )
     )

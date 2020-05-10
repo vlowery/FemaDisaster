@@ -26,7 +26,7 @@ function(input, output, session){
   output$pie_1996 <- renderGvis(
     data %>% filter(Year == 1996) %>% group_by(incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       gvisPieChart(labelvar = "incidentType", numvar = "Count", 
-                   options=list(width="450px", height="400px", 
+                   options=list(width="400px", height="350px", 
                                 title = "Proportions of Emergencies, 1996",
                                 chartArea= "{left:40, top:30, bottom:0, right:0}", 
                                 #slices="[{}, {offset: .2}, {}, {}, {}, {offset: .2}, {}]", 
@@ -48,7 +48,7 @@ function(input, output, session){
   output$pie_2011 <- renderGvis(
     data %>% filter(Year == 2011) %>% group_by(incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       gvisPieChart(labelvar = "incidentType", numvar = "Count", 
-                   options=list(width="450px", height="400px", 
+                   options=list(width="400px", height="350px",
                                 title = "Proportions of Emergencies, 2011",
                                 chartArea= "{left:40, top:30, bottom:0, right:0}", 
                                 #slices="[{}, {offset: .2}, {}, {}, {}, {offset: .2}, {offset: .3}]", 
@@ -64,7 +64,7 @@ function(input, output, session){
   output$pie_2020 <- renderGvis(
     data %>% filter(Year == 2020) %>% group_by(incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       gvisPieChart(labelvar = "incidentType", numvar = "Count", 
-                   options=list(width="450px", height="400px", 
+                   options=list(width="400px", height="350px",
                                 title = "Proportions of Emergencies, 2020",
                                 chartArea= "{left:40, top:30, bottom:0, right:0}", 
                                 slices="[{}, {offset: .3}, {offset: .2}, {offset: .4}, {offset: .4}, {offset: .4}, {offset: .4}]", 
@@ -79,7 +79,7 @@ function(input, output, session){
                               colors="['#e0d7da', '#c84b4b']"))
   )
   
-  output$totals_table <- renderDataTable(
+  output$totals_table <- DT::renderDataTable(
     datatable(state_count) %>% 
       formatStyle("Count", background = styleColorBar(state_count$Count, '#c84b4b'), 
                   backgroundSize = '100% 90%', backgroundRepeat = 'no-repeat', backgroundPosition = 'center')
@@ -113,7 +113,7 @@ function(input, output, session){
                                 backgroundColor = "#dbe7ff", colors="['#ffd5e1', '#7c009c']"))
   )
   
-  output$disasters_table <- renderDataTable(
+  output$disasters_table <- DT::renderDataTable(
     datatable(data_tb) %>% formatStyle("Total", background = styleColorBar(data_tb$Total, '#b82b4b'),
                   backgroundSize = '100% 90%',
                   backgroundRepeat = 'no-repeat',
@@ -132,13 +132,23 @@ function(input, output, session){
       formatStyle("Duration (days)", background = styleColorBar(table_longest$`Duration (days)`, '#b82b4b'))
       )
   
-  output$drought_fire <- renderPlot(
-    data %>% filter(incidentType != "Biological", incidentType != "Other", incidentType != "Terrorist", 
-                      incidentType != "Typhoon", incidentType != "Chemical", incidentType != "Human Cause") %>% 
+  output$corr_plot <- renderPlot(
+    data %>% filter(incidentType == "Fire" | incidentType == "Hurricane" | incidentType == "Flood" | 
+                    incidentType == "Severe Storm(s)" | incidentType == "Tornado" | incidentType == "Snow" |  
+                    incidentType == "Severe Ice Storm" | incidentType == "Drought" | incidentType == "Freezing") %>% 
       group_by(incidentType, Year) %>% 
       summarise(Count = length(unique(femaDeclarationString))) %>% 
       pivot_wider(names_from = incidentType, values_from = Count, values_fill = list(Count = 0)) %>% cor() %>% 
       ggcorrplot(outline.col = "white")
   )
+  
+  output$year_gif <- renderImage(
+    list(src = "year_anim.gif",
+         contentType = 'image/gif', 
+         width = 400,
+         height = 300),
+         # alt = "This is alternate text"
+    deleteFile = FALSE     
+    )
   
 }
