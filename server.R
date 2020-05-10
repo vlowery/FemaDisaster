@@ -87,12 +87,15 @@ function(input, output, session){
   
   output$five_states <- renderPlot(
     data %>% filter(State == "Texas"|State == "Florida"|State == "California"|State == "Washington"|State == "Oklahoma") %>% 
+      filter(incidentType == "Fire" | incidentType == "Hurricane" | incidentType == "Flood" | 
+               incidentType == "Severe Storm(s)" | incidentType == "Tornado" | incidentType == "Earthquake" |  
+               incidentType == "Severe Ice Storm" | incidentType == "Biological") %>% 
       group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       ggplot(aes(x=reorder(incidentType, Count, max), y=Count)) + geom_col(aes(fill = State)) + 
       labs(title="Emergency Distribution, 1953-2020", x = "Emergency Type") +
       theme(axis.text.x = element_text(angle = 45, hjust = 1)) + theme(legend.position = "none") +
       scale_fill_manual(values = c("#f29591", "#486bea", "#e5d2d1", "#d6a23b", "#152596")) + ylim(c(0, 300)) +
-      geom_text(aes(label = ifelse(incidentType == "Severe Storm(s)"|incidentType == "Hurricane"|incidentType == "Fire", Count, "")),  hjust = 0.4, vjust = -0.5) + facet_grid(State ~ .)
+      geom_text(aes(label = Count),  hjust = 0.4, vjust = -0.5) + facet_grid(State ~ .)
   )
   
   output$disaster_chart <- renderPlot(
@@ -122,7 +125,8 @@ function(input, output, session){
   
   output$delay_graph <- renderPlot(
     data %>% mutate("Delay" = declarationDate - incidentBeginDate) %>%
-      filter(Delay >= 0) %>% distinct(femaDeclarationString, declarationDate, Year, incidentType, 
+      # data has incorrect inputs (disaster start date happens after the disaster declaration date, because FEMA is psychic)
+      filter(Delay >= 0, Delay != 2671) %>% distinct(femaDeclarationString, declarationDate, Year, incidentType, 
                                         declarationTitle, incidentBeginDate, incidentEndDate, State, Delay = as.numeric(gsub(" days", "", Delay))) %>% 
       ggplot(aes(x=Year, y=Delay)) + geom_point()
   )

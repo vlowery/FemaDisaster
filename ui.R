@@ -8,17 +8,13 @@ shinyUI(
         menuItem("Introduction", tabName = "intro", icon = icon("info")),
         menuItem("Disaster Types", tabName = "disaster_types", icon = icon("car-crash")),
         menuItem("Totals by Year", tabName = "overview_years", icon = icon("calendar")), 
-                 # menuSubItem("Overview", tabName = "overview_years"),
-                 # menuSubItem("1996 Investigation", tabName = "1996"),
-                 # menuSubItem("2011 Investigation", tabName = "2011"),
-                 # menuSubItem("2020 Investigation", tabName = "2020")),
         menuItem("Totals by State", tabName = "states", icon = icon("globe")),
         menuItem("Delays to be Recognized", tabName = "when", icon = icon("map")),
-        menuItem("Assistance", tabName = "assistance", icon = icon("heartbeat")),
-        HTML('<li> <a href="#shiny-tab-worst" data-toggle="tab" data-value="worst">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <span> The Worst</span>
-                        </a> </li>'),
+        # menuItem("Assistance", tabName = "assistance", icon = icon("heartbeat")),
+        # HTML('<li> <a href="#shiny-tab-worst" data-toggle="tab" data-value="worst">
+        #                 <i class="fas fa-exclamation-triangle"></i>
+        #                 <span> The Worst</span>
+        #                 </a> </li>'),
         menuItem("Conclusions", tabName = "conclusions")
       )
     ),
@@ -114,38 +110,43 @@ shinyUI(
                 fluidPage(
                   fluidRow(h2("Total Emergencies by State")),
                   fluidRow(
-                    box(width= 3, "This section serves to show where emergencies are happening. The table 
-                    belows shows Texas has far more emergencies than any other state. Texas has more 
-                    emergencies than New York and California combined. Why is that?"),
+                    box(width= 3, "According to the table on the far right, Texas takes the lead with the most emergencies recorded since 1953 with a total of 358 emergency declarations.
+                        Trailing only a few counts behind is California with 323 total emergencies.", br(), br(), "The next two states, Oklahoma and Washington, might come as a surprise in the 
+                        list before the hurricane-prone state of Florida. To dive deeper in what specifically is happening in these top five states, the section below disects top disaster categories for each state."),
                     box(title = "Total Emergencies by State, 1953 - 2020", width = 5, htmlOutput(width = "auto", "totals_map")),
                   box(width=4, DT::dataTableOutput("totals_table"))),
                   h2("What's Happening in States with Higher Counts?"),
                   fluidRow(
                     box(plotOutput(height = 700, "five_states")),
-                    box("Texas' large number of emergencies seems to be mostly due to its high number of fires and hurricanes. 
-                        When one thinks of a place to be hit hard by hurricanes, Texas might not have been the first to come to mind. 
-                        To see how Texas compares to Florida, a state that is usually the first to feel the wrath of any hurricane hitting the U.S., 
-                        I've plotted Florida's distribution of state emergencies.")),
+                    box("With the knowledge that Texas experienced two devastating years of widespread grass fires, it is rational to expect Texas' distribution of emergencies to pool in the 'Fire' category.  
+                        Additionally, California is known for struggling with hot weather, dry seasons, and high winds: the perfect recipe for forest fires. While Texas had a few boughts of extreme fire disaster, 
+                        California continually experiences low numbers of fires, collecting up over the years. Texas neighbor Oklahoma also struggles with a high fire emergency count, but surprisingly Washington 
+                        has a dry season, too, that often instigates forest fires. Washington as of 2019 has proposed a 'groundbreaking strategic plan' to buid up the state's fire prevention team, 
+                        in addition to strengthening its current firefighter and response teams.[2]", br(), br(), h6("[2] Joseph O'Sullivan (January 17, 2019). 'Washington state wants to add firefighters and training academy to beef up wildfire response'. The Seattle Times."))),
                 )),
         tabItem(tabName = "when", 
                 h2("How Has Disaster Recognition Progressed?"),
-                box("Every disaster has an associated start date in addition to a disaster declaration date. This tab will look into how the difference 
-                    in time has shortened or lengthened. Are certain presidents quick about declaring emergencies, or are some presidents slow with the aid."),
+                box("Every disaster has an associated start date in addition to a disaster declaration date. The graph to the right looks into how the difference 
+                    in time has actually lengthened, delaying the release of federal aid and funds for safe-guarding citizens in disaster zones. Further research would compare certain presidents' and their speed at declaring emergencies during their term.", 
+                    br(), br(), p("Missing from the graph on the right is one outlying data point, an emergency declared in Hawaii for the eruption of its volcano Kīlauea. This volcano began activity in 1983, but as much of the land surrounding the highly-active 
+                                  volcano was already fairly void of human presence, it was only later as the volcano continued to errupt that an emergency was declared in 1990 to evacuate citizens in the path of actively flowing lava. This delay in need for an emergency 
+                                  is misleading and therefore excluded from the dataset for this graph.")),
                 box(plotOutput("delay_graph")),
-                ),
-        tabItem(tabName = "assistance", 
-                h2("The Distribution of Aid"),
-                box("Aid to civilians can be requested if certain requirements are met. This page will explore whether aid has been equally doled out for similar 
-                    disasters in different states and counties. This will also begin the exploration of cost allocation, as aid to civilians requires the federal 
-                    governemnt to use tax payer's money to save citizens in need. Ideally assistance is delivered when the emergency was unavoidable. This page 
-                    will discover whether certain states have become 'repeat offenders' and are using tax money for emergencies they could avoid.")
-                ),
-        tabItem(tabName = "worst", 
                 h2("The Longest-Lasting Emergency"),
                 br(),
                 fluidRow(column(width = 12, box(width = 12, DT::dataTableOutput(width = "100%", "longest_disaster")))),
-                h2("The Most Wide-Spread Disaster"),
+                
                 ),
+        # tabItem(tabName = "assistance", 
+        #         h2("The Distribution of Aid"),
+        #         box("Aid to civilians can be requested if certain requirements are met. This page will explore whether aid has been equally doled out for similar 
+        #             disasters in different states and counties. This will also begin the exploration of cost allocation, as aid to civilians requires the federal 
+        #             governemnt to use tax payer's money to save citizens in need. Ideally assistance is delivered when the emergency was unavoidable. This page 
+        #             will discover whether certain states have become 'repeat offenders' and are using tax money for emergencies they could avoid.")
+        #         ),
+        # tabItem(tabName = "worst", 
+        #         h2("The Most Wide-Spread Disaster"),
+        #         ),
         tabItem(tabName = "conclusions", 
                 h2("What This Tells Us:"),
                 imageOutput("year_gif"),
