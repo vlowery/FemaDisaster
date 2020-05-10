@@ -9,7 +9,6 @@ function(input, output, session){
       ylab("Emergency Count") + ggtitle("Total Emergency Count by Disaster ID") + theme(legend.position = "none") + 
       geom_text(aes(label = ifelse(Year == 1996|Year == 2011|Year==2020, Total, "")),  vjust = -0.5) +
       scale_x_continuous(breaks=seq(1950, max(data$Year), 5))
-    ## ADD A BOX WITH DARKER COLORING, THEN ADD COLORING TO ZOOM GRAPH
   )
   
   output$reframe <- renderPlot(
@@ -18,7 +17,10 @@ function(input, output, session){
       ylab("Emergency Count") + ggtitle("Total Emergency Count by Counties Affected") + 
       theme(legend.position = "none") + geom_text(aes(label = ifelse(Year == 2005|Year==2020, Count, "")),  vjust = -0.5) +
       scale_x_continuous(breaks=seq(1950, max(data$Year), 5))
-    ## ADD A BOX WITH ZOOM COLORING FROM YEARLY GRAPH
+  )
+  
+  output$text1 <- renderText(
+    paste("Reactive Bar Graph and Map:", input$radio1)
   )
   
   output$pie_1996 <- renderGvis(
@@ -31,6 +33,18 @@ function(input, output, session){
                                 colors="['#ce412a', '#001489', '#c69c6e', '#ffc2cd', '#008080', '#dbe7ff', '#00ffff']"))
   )
   
+  output$map_1996 <- renderPlot(
+    data %>% filter(Year == 1996) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
+      left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
+      tm_shape() + tm_fill("Count", palette = "YlGnBu", contrast = c(0.01, 1), title = "Emergency Totals") + tm_borders()
+  )
+  
+  output$map_2011 <- renderPlot(
+    data %>% filter(Year == 2011) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
+      left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
+      tm_shape() + tm_fill("Count", palette = "YlGnBu", contrast = c(0.01, 1), title = "Emergency Totals") + tm_borders()
+  )
+  
   output$pie_2011 <- renderGvis(
     data %>% filter(Year == 2011) %>% group_by(incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       gvisPieChart(labelvar = "incidentType", numvar = "Count", 
@@ -39,6 +53,12 @@ function(input, output, session){
                                 chartArea= "{left:40, top:30, bottom:0, right:0}", 
                                 #slices="[{}, {offset: .2}, {}, {}, {}, {offset: .2}, {offset: .3}]", 
                                 colors="['#ffc2cd', '#c69c6e', '#ce412a', '#001489', '#008080', '#dbe7ff', '#00ffff']"))
+  )
+  
+  output$map_2020 <- renderPlot(
+    data %>% filter(Year == 2020) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
+      left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
+      tm_shape() + tm_fill("Count", palette = "YlGnBu", contrast = c(0.01, 1), title = "Emergency Totals") + tm_borders()
   )
   
   output$pie_2020 <- renderGvis(
@@ -78,7 +98,9 @@ function(input, output, session){
   output$disaster_chart <- renderPlot(
     data %>% filter(data$incidentType == input$radio1) %>% group_by(Year) %>% 
       summarise(Count = length(unique(femaDeclarationString))) %>% ggplot(aes(x=Year, y=Count)) + geom_col(fill = "#2f3337") + 
-      scale_x_continuous(breaks=seq(1950, 2020, 2)) +
+      scale_x_continuous(limits = c(1952, 2021), n.breaks = 14) + #breaks=seq(1950, 2020, 2)) + 
+      #xlim(1953, 2021) + 
+      geom_smooth(color = "red", se= FALSE, ymin = 0) +
       theme(axis.text.x = element_text(angle = 45, hjust = 1))
   )
   
@@ -105,5 +127,18 @@ function(input, output, session){
       ggplot(aes(x=Year, y=Delay)) + geom_point()
   )
   
+  output$longest_disaster <- DT::renderDataTable(
+    table_longest %>% datatable(options = list(dom = 't', autoWidth = TRUE)) %>% 
+      formatStyle("Duration (days)", background = styleColorBar(table_longest$`Duration (days)`, '#b82b4b'))
+      )
+  
+  output$drought_fire <- renderPlot(
+    data %>% filter(incidentType != "Biological", incidentType != "Other", incidentType != "Terrorist", 
+                      incidentType != "Typhoon", incidentType != "Chemical", incidentType != "Human Cause") %>% 
+      group_by(incidentType, Year) %>% 
+      summarise(Count = length(unique(femaDeclarationString))) %>% 
+      pivot_wider(names_from = incidentType, values_from = Count, values_fill = list(Count = 0)) %>% cor() %>% 
+      ggcorrplot(outline.col = "white")
+  )
   
 }

@@ -7,7 +7,8 @@ library(lubridate)
 library(albersusa)
 library(sf)
 library(ggthemes)
-
+library(tmap)
+library(ggcorrplot)
 
 # Load data
 data <- read.csv("./data/DisasterDeclarationsSummaries.csv", stringsAsFactors = FALSE)
@@ -20,7 +21,8 @@ data <- data %>% mutate(declarationDate = as.Date(declarationDate, "%Y-%m-%d"),
                 rename("State_abbr" = state, "Year" = fyDeclared) %>% 
                 mutate(Year = year(incidentBeginDate)) %>% 
                 filter(!State_abbr %in% c("AS", "FM", "GU", "MH", "MP", "PR", "PW", "VI")) %>% 
-                distinct(femaDeclarationString, designatedArea, .keep_all = TRUE)
+                distinct(femaDeclarationString, designatedArea, .keep_all = TRUE) %>% 
+                select(-hash, -lastRefresh, -id)
 
 # Add State Names
 state_name_df <- as.data.frame(usa_sf()) %>% select(abbr = iso_3166_2, "State" = name)
@@ -35,5 +37,17 @@ data_tb <- data %>% group_by("Disaster Type" = incidentType) %>% summarise("Tota
 # Est. Mean of all Year's Emergency Count
 mean_yearly_emrg <- data %>% filter(Year != 2005, Year != 2020, Year != 1996) %>% group_by(Year) %>% 
   summarise(n = length(unique(femaDeclarationString))) %>% summarise(mean(n))
+
+# Create Table for Longest Disaster
+table_longest <- data %>% mutate("Duration" = as.integer(incidentEndDate - incidentBeginDate)) %>% arrange(desc(Duration)) %>% 
+  group_by(femaDeclarationString) %>% distinct(femaDeclarationString, .keep_all = TRUE) %>% 
+  select("FEMA Disaster ID" = femaDeclarationString, State, Year, "Duration (days)" = Duration, "Incident Start Date" = incidentBeginDate, "Incident End Date" = incidentEndDate, "Incident Type" = incidentType, "Incident Title" = declarationTitle) %>% 
+  head(10)
+
+# Create fips DF for Leaflet Maps
+polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
+test_states <- st_sf(left_join(state_count, polygon_df, by = c("State")))
+
+
 
 

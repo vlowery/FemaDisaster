@@ -48,6 +48,11 @@ G3 = gvisGeoChart(state_count,
                                colors="['#e0d7da', '#c84b4b']",
                                width=800, height=600, titleTextStyle="{color:'red', fontName:'Courier', fontSize:16}"))
 plot(G3)
+
+# plot(st_geometry(test_states), col = test_states$Count) + scale_color_continuous(low = "white", high = "red")
+tm_shape(test_states) + tm_fill("Count", palette = "-plasma", contrast = c(0.01, 0.7), n = 7, title = "Emergency Totals") + tm_borders()
+
+
 #####
 # mapStates = map("state", fill = TRUE, plot = FALSE)
 # leaflet(data = mapStates) %>% addTiles() %>%
@@ -61,37 +66,36 @@ states = map_data("state")
 
 
 # install.packages("usmap")
-# library(usmap)
+library(usmap)
 # help(usmap)
 # 
 # library(rgdal)
 # states <- readOGR(dsn = "./cb_2014_us_state_20m.shp",
 #                   layer = "cb_2014_us_state_20m", verbose = FALSE)
 
-# plot_usmap(data = state_count, values = "n", labels = TRUE) + 
-#   scale_fill_continuous(low = "white", high = "red", guide = FALSE) + 
+# plot_usmap(include = state_count$State, values = as.numeric(state_count$Count), labels = TRUE) +
+#   scale_fill_continuous(low = "white", high = "red", guide = FALSE) +
 #   scale_x_continuous(expand = c(0, 0)) + scale_y_continuous(expand = c(0, 0))
-# 
 # 
 #  devtools::install_github("hrbrmstr/albersusa")
 # library(albersusa)
 # library(leaflet)
 
 # map without background map
-# leaflet(options = leafletOptions(crs = leafletCRS(crsClass = "L.CRS.Simple"),
-#                                  minZoom = -100)) %>%
-#   addPolygons(data = usa_sf("lcc"))
+leaflet(options = leafletOptions(crs = leafletCRS(crsClass = "L.CRS.Simple"),
+                                 minZoom = -13.75)) %>%
+  addPolygons(data = geometry)
 
 # with background map (which is of course non-sense)
-# leaflet(options = leafletOptions(minZoom = 3, maxZoom = 10)) %>% fitBounds(-122, 38, -70, 43) %>%
+# leaflet(options = leafletOptions(minZoom = 3, maxZoom = 10)) %>% addTiles() %>% fitBounds(-122, 38, -70, 43) %>%
 #   addPolygons(data = my_spatial_data, fillColor = my_spatial_data$n)
 # 
 # my_spatial_data <- readRDS("myspatialdata.rds")
-# move_akhi <- usa_sf()
-# move_akhi$State <- move_akhi$iso_3166_2 # state abbrevation column, AK, AL ...  
-# geometry <- move_akhi[,"State"] # subsetting class sf always retains geometry 
-# my_spatial_data <- merge(x = geometry, y = state_count, 
-#                          by = "State", all.x = TRUE)
+move_akhi <- usa_sf()
+move_akhi$State <- move_akhi$iso_3166_2 # state abbrevation column, AK, AL ...
+geometry <- move_akhi[,"State"] # subsetting class sf always retains geometry
+my_spatial_data <- merge(x = geometry, y = state_count,
+                         by = "State", all.x = TRUE)
 #####
 head(data)
 unique(data$designatedArea)
@@ -104,6 +108,9 @@ data <- data %>% distinct(femaDeclarationString, designatedArea)
 length(unique(data$declarationDate))
 #####
 
-
+data %>% filter(data$incidentType == "Tornado") %>% group_by(Year) %>% 
+  summarise(Count = length(unique(femaDeclarationString))) %>% ggplot(aes(x=Year, y=Count)) + geom_col(fill = "#2f3337") + 
+  scale_x_continuous(breaks=seq(1950, 2020, 2)) + geom_smooth(colour = "red", se= FALSE) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 

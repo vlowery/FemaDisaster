@@ -28,8 +28,8 @@ shinyUI(
                 fluidRow(column(width = 6, offset = 3, align = "center", box(width = 12, h1(tags$b("U.S. National Emergency Declarations:\n")),
                                                            h2(tags$b("Where FEMA Acts the Most, and Why")),
                                                            br(),
-                                                           img(src = "hurricane.jpg", width = 500),
-                                                           h5("'Hurrican Devastation Charley, from WikiImages'"),
+                                                           img(src = "hurricane.jpg", style="width: 100%"),
+                                                           h5("'Hurrican Devastation Charley', from WikiImages"),
                                                            br(),
                                                            br(),
                                                            h4(p("Created on April 1, 1979 by President Jimmy Carter, the Federal Emergency Management Agency's 
@@ -38,18 +38,18 @@ shinyUI(
                                                               declared as early as January 1, 1953."), p("This project will disect the organization's allocation of 
                                                               emergency resources, aiming to find patterns in disasters. If a pattern can be detected, and thus a 
                                                               disaster can be predicted, funds could be reallocated and possibly saved by proactively safe-guarding 
-                                                              the possible disaster zone. ")),
+                                                              the possible disaster zones. ")),
                                                            br(),
                                                            h5("Research and modelling by Victoria Lowery."))))
                 ),
         tabItem(tabName = "disaster_types",
                 h2("Most Common Emergencies"),
-                fluidRow(box("In the past 68 years, the most common emergency declared has been due to fires. Surprisingly, second and third place are due to 
+                fluidRow(box(width = 4, "In the past 68 years, the most common emergency declared has been due to fires. Surprisingly, second and third place are due to 
                              severe storms and flooding. Hurricanes, in fourth place, drop by more than half of its predecessor. While hurricanes maybe hold the attention
                              of news channels and papers longer, they occur far less frequently than the average bad storm. Additionally, hurricanes come with a considerable 
                              amount of notice, unlike flash floods. Interestingly, a new category established this year, the 'biological disaster', is already ranked seventh 
                              place in total emergency declarations due to COVID-19."),
-                         box(dataTableOutput("disasters_table"))
+                         box(width = 4, dataTableOutput("disasters_table"))
                 ),
                 h2("What Constitutes an Emergency"),
                 fluidRow(
@@ -71,33 +71,37 @@ shinyUI(
                   box(width = 3, radioButtons("radio1", label = h3("Select Disaster Type:"),
                                                      choices = sort(unique(data$incidentType)), 
                                                      selected = "Hurricane")),
-                  box(title = "Reactive Bar Graph and Map, Distribution of Disaster Selected", solidHeader = TRUE, status = "warning", column(width = 12, plotOutput("disaster_chart"), htmlOutput(width = "auto", "disaster_map")))),
+                  box(title = textOutput("text1"), solidHeader = TRUE, status = "warning", column(width = 12, tags$b("Distribution by Year for Selected Emergency"),
+                                                                                                  plotOutput("disaster_chart"), br(), tags$b("The United States: Distribution of Selected Emergency, 1953 - 2020"), htmlOutput(width = "auto", "disaster_map")))),
         ),
         tabItem(tabName = "overview_years", 
                 fluidPage(
                   h2("Total Emergencies by Year"),
                   fluidRow(
-                    box(plotOutput("totals_yearly")),
-                    box("FEMA assigns a unique ID number to each emergency declared. This model to the left shows the tally of every emergency declaration from the year 1953 to May 2020. 
+                    box(width = 4, plotOutput("totals_yearly")),
+                    box(width = 4, "FEMA assigns a unique ID number to each emergency declared. This model to the left shows the tally of every emergency declaration from the year 1953 to May 2020. 
                     There is a general increase in emergencies declared, however, three years in particular 
                     saw an incredible rise in emergencies. A total of 147 emergencies were declared in 1996, a considerable jump from all years prior. 2011 also saw a jump in case numbers, 
                     in fact double the previous year's count. And within the first five months of 2020, over 177 emergencies have been declared, mostly because of complications from COVID-19. 
                     Excluding these three years, the mean emergency count is ", round(mean_yearly_emrg), " per year.")),
                   fluidRow(
-                    box(title = "REFRAMING BY TOTAL COUNTIES AFFECTED", collapsible = TRUE, collapsed = TRUE, status = "danger", solidHeader = TRUE, plotOutput("reframe")),
-                    box("If we reframe our look to counting total individual counties affected by disasters rather than 
+                    box(width = 4, title = "REFRAMING BY TOTAL COUNTIES AFFECTED", collapsible = TRUE, collapsed = TRUE, status = "danger", solidHeader = TRUE, plotOutput("reframe")),
+                    box(width = 4, "If we reframe our look to counting total individual counties affected by disasters rather than 
                     unique FEMA disaster IDs, which can cover one to hundreds of counties under one ID, we see two distinct years stand out. 
                         As this is an approximation for total citizens affected, it makes sense that the two stand out years are 2005, the year of Hurricane 
                         Katrina, and 2020, as COVID-19 spreads far and wide throughout the country."))
                   )),
         tabItem(tabName = "1996", "Here I will discuss 1996.",
-                box(width = 5, htmlOutput("pie_1996"))
+                box(width = 5, htmlOutput("pie_1996")),
+                box(title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", plotOutput("map_1996"))
                 ),
         tabItem(tabName = "2011", "Here I will discuss 2005.",
-                box(width = 5, htmlOutput("pie_2011"))
+                box(width = 5, htmlOutput("pie_2011")),
+                box(title = "Distribution of Emergencies Declared, 2011", solidHeader = TRUE, status = "danger", plotOutput("map_2011"))
                 ),
         tabItem(tabName = "2020", "Here I discuss 2020.",
-                box(width = 5, htmlOutput("pie_2020"))
+                box(width = 5, htmlOutput("pie_2020")),
+                box(title = "Distribution of Emergencies Declared, 2020", solidHeader = TRUE, status = "danger", plotOutput("map_2020"))
                 ),
         tabItem(tabName = "states",
                 fluidPage(
@@ -115,8 +119,6 @@ shinyUI(
                         When one thinks of a place to be hit hard by hurricanes, Texas might not have been the first to come to mind. 
                         To see how Texas compares to Florida, a state that is usually the first to feel the wrath of any hurricane hitting the U.S., 
                         I've plotted Florida's distribution of state emergencies.")),
-                  # fluidRow(
-                  #     box(plotOutput("florida")))
                 )),
         tabItem(tabName = "when", 
                 h2("How Has Disaster Recognition Progressed?"),
@@ -134,10 +136,12 @@ shinyUI(
         tabItem(tabName = "worst", 
                 h2("The Longest-Lasting Emergency"),
                 br(),
+                fluidRow(column(width = 12, box(width = 12, DT::dataTableOutput(width = "100%", "longest_disaster")))),
                 h2("The Most Wide-Spread Disaster"),
                 ),
         tabItem(tabName = "conclusions", 
-                h2("Given The Findings:")
+                h2("Given The Findings:"),
+                
                 )
       )
     )
