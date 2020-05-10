@@ -1,6 +1,10 @@
 {
-    "path" : "~/Documents/NYCDSA_Work/R/project2",
+    "path" : "~/Downloads/Devin",
     "sortOrder" : [
+        {
+            "ascending" : false,
+            "columnIndex" : 4
+        },
         {
             "ascending" : true,
             "columnIndex" : 2

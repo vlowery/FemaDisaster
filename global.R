@@ -9,6 +9,7 @@ library(sf)
 library(ggthemes)
 library(tmap)
 library(ggcorrplot)
+library(magick)
 
 # Load data
 data <- read.csv("./data/DisasterDeclarationsSummaries.csv", stringsAsFactors = FALSE)
@@ -46,8 +47,40 @@ table_longest <- data %>% mutate("Duration" = as.integer(incidentEndDate - incid
 
 # Create fips DF for Leaflet Maps
 polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
-test_states <- st_sf(left_join(state_count, polygon_df, by = c("State")))
+# test_states <- st_sf(left_join(state_count, polygon_df, by = c("State")))
 
+# Create Animation
+# 
+# sum_years <- function(year_vector){
+#   for (i in 2:length(year_vector)){
+#     year_vector[i] = year_vector[i] + year_vector[i-1]
+#   }
+#   return(year_vector)
+# }
+# 
+# tallies_df <- data.frame(Years = rep(unique(year_count$Year), each = 51), States = unique(year_count$State), Count = 0, stringsAsFactors = FALSE)
+# 
+# year_count <- data %>% group_by(Year, State) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
+#   right_join(., tallies_df, by=c("Year" = "Years", "State" = "States")) %>% 
+#   mutate(Count = ifelse(is.na(Count.x), Count.y, Count.x)) %>% select(-Count.x, -Count.y) %>% 
+#   group_by(State) %>% arrange(Year) %>%  mutate(Count = sum_years(Count)) %>% ungroup() %>% arrange(desc(Count))
+#   left_join(., polygon_df, by = c("State")) %>% st_sf() %>% ungroup()
+# 
+# country_shape <- data %>% select(State) %>% unique() %>% left_join(., polygon_df, by = c("State")) %>% st_sf()
+# 
+# year_anim <- tm_shape(country_shape) + tm_polygons() + tm_shape(year_count) +
+#   tm_dots(size = "Count", col = 'red', alpha = .5) +
+#   tm_facets(along = "Year", free.coords = FALSE)
+# tmap_animation(tm = year_anim, filename = "year_anim.gif", width = 800, height = 600, delay=19)
+# 
+# # year_count <- data.frame(year_count, stringsAsFactors = FALSE)  %>% mutate(State = as.character(State))
+#   
+# # for (year_ in unique(tallies_df$Year)){
+# #   for (state_ in unique(tallies_df["States"])){
+#     # tallies_df[tallies_df$Year == year_ & tallies_df$State == state_, "Count"] <-  year_count[year_count$Year == year_ & year_count$State == state_, "Count"]
+# #   }
+# # }
+# 
 
 
 

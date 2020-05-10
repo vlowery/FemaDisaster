@@ -91,7 +91,7 @@ shinyUI(
                         As this is an approximation for total citizens affected, it makes sense that the two stand out years are 2005, the year of Hurricane 
                         Katrina, and 2020, as COVID-19 spreads far and wide throughout the country."))
                   )),
-        tabItem(tabName = "1996", "Here I will discuss 1996.",
+        tabItem(tabName = "1996",
                 box(width = 5, htmlOutput("pie_1996")),
                 box(title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", plotOutput("map_1996"))
                 ),

@@ -114,3 +114,6 @@ data %>% filter(data$incidentType == "Tornado") %>% group_by(Year) %>%
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 
+
+
+
