@@ -36,13 +36,13 @@ function(input, output, session){
   output$map_1996 <- renderPlot(
     data %>% filter(Year == 1996) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
-      tm_shape() + tm_fill("Count", palette = "YlGnBu", contrast = c(0.01, 1), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
+      tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
   )
   
   output$map_2011 <- renderPlot(
     data %>% filter(Year == 2011) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
-      tm_shape() + tm_fill("Count", palette = "YlGnBu", contrast = c(0.01, 1), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
+      tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
   )
   
   output$pie_2011 <- renderGvis(
@@ -58,7 +58,8 @@ function(input, output, session){
   output$map_2020 <- renderPlot(
     data %>% filter(Year == 2020) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
       left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
-      tm_shape() + tm_fill("Count", palette = "YlGnBu", contrast = c(0.01, 1), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
+      tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + 
+      tm_borders() + tm_shape(country_shape) + tm_borders()
   )
   
   output$pie_2020 <- renderGvis(
