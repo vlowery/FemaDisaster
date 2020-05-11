@@ -68,7 +68,9 @@ shinyUI(
                                                      choices = sort(unique(data$incidentType)), 
                                                      selected = "Hurricane")),
                   box(title = textOutput("text1"), solidHeader = TRUE, status = "warning", column(width = 12, tags$b("Distribution by Year for Selected Emergency"),
-                                                                                                  plotOutput("disaster_chart"), br(), tags$b("The United States: Distribution of Selected Emergency, 1953 - 2020"), htmlOutput(width = "auto", "disaster_map")))),
+                                                                                                  plotOutput("disaster_chart"), br(), tags$b("The United States: Distribution of 
+                                                                                                                                             Selected Emergency, 1953 - 2020"), 
+                                                                                                  htmlOutput(width = "auto", "disaster_map")))),
         ),
         tabItem(tabName = "overview_years", 
                 fluidPage(
@@ -98,7 +100,9 @@ shinyUI(
                     box(width = 5, htmlOutput("pie_1996")),
                     box(width = 5, title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", plotOutput("map_1996"))),
                   fluidRow(
-                    box(width = 2, title = "2011", "2011 broke many records, including the most destructive fire in Texas' history, the Bastrop County Complex fire. In total, Texas comprised 47% of all acreage burned in the United States in 2011[1].", br(), br(), h6("[1] Tripp, Leslie; Gallman, Stephanie (April 19, 2011). 'Arrest made in connection with Texas wildfire near Austin'. CNN.com. Retrieved 2011-04-18.")),
+                    box(width = 2, title = "2011", "2011 broke many records, including the most destructive fire in Texas' history, the Bastrop County Complex fire. 
+                        In total, Texas comprised 47% of all acreage burned in the United States in 2011[1].", 
+                        br(), br(), h6("[1] Tripp, Leslie; Gallman, Stephanie (April 19, 2011). 'Arrest made in connection with Texas wildfire near Austin'. CNN.com. Retrieved 2011-04-18.")),
                     box(width = 5, htmlOutput("pie_2011")),
                     box(width = 5, title = "Distribution of Emergencies Declared, 2011", solidHeader = TRUE, status = "danger", plotOutput("map_2011"))),
                   fluidRow(
@@ -122,19 +126,23 @@ shinyUI(
                         Additionally, California is known for struggling with hot weather, dry seasons, and high winds: the perfect recipe for forest fires. While Texas had a few boughts of extreme fire disaster, 
                         California continually experiences low numbers of fires, collecting up over the years. Texas neighbor Oklahoma also struggles with a high fire emergency count, but surprisingly Washington 
                         has a dry season, too, that often instigates forest fires. Washington as of 2019 has proposed a 'groundbreaking strategic plan' to buid up the state's fire prevention team, 
-                        in addition to strengthening its current firefighter and response teams.[2]", br(), br(), h6("[2] Joseph O'Sullivan (January 17, 2019). 'Washington state wants to add firefighters and training academy to beef up wildfire response'. The Seattle Times."))),
+                        in addition to strengthening its current firefighter and response teams.[2]", br(), br(), h6("[2] Joseph O'Sullivan (January 17, 2019). 'Washington state wants to add firefighters and 
+                                                                                                                     training academy to beef up wildfire response'. The Seattle Times."))),
                 )),
         tabItem(tabName = "when", 
                 h2("How Has Disaster Recognition Progressed?"),
                 box("Every disaster has an associated start date in addition to a disaster declaration date. The graph to the right looks into how the difference 
-                    in time has actually lengthened, delaying the release of federal aid and funds for safe-guarding citizens in disaster zones. Further research would compare certain presidents' and their speed at declaring emergencies during their term.", 
-                    br(), br(), p("Missing from the graph on the right is one outlying data point, an emergency declared in Hawaii for the eruption of its volcano Kīlauea. This volcano began activity in 1983, but as much of the land surrounding the highly-active 
-                                  volcano was already fairly void of human presence, it was only later as the volcano continued to errupt that an emergency was declared in 1990 to evacuate citizens in the path of actively flowing lava. This delay in need for an emergency 
-                                  is misleading and therefore excluded from the dataset for this graph.")),
+                    in time has actually lengthened, delaying the release of federal aid and funds for safe-guarding citizens 
+                    in disaster zones. Further research would compare certain presidents' and their speed at declaring emergencies during their term.", 
+                    br(), br(), p("Missing from the graph on the right is one outlying data point, an emergency declared in Hawaii 
+                    for the eruption of its volcano Kīlauea. This volcano began activity in 1983, but as much of the land surrounding the highly-active 
+                    volcano was already fairly void of human presence, it was only later as the volcano continued to errupt that an emergency was 
+                    declared in 1990 to evacuate citizens in the path of actively flowing lava. This delay in need for an emergency 
+                    is misleading and therefore excluded from the dataset for this graph.")),
                 box(plotOutput("delay_graph")),
                 h2("The Longest-Lasting Emergency"),
                 br(),
-                fluidRow(column(width = 12, box(width = 12, DT::dataTableOutput(width = "100%", "longest_disaster")))),
+                fluidRow(column(width = 12, box(width = 12, DT::dataTableOutput(width = "100%", "longest_disaster"))))
                 
                 ),
         # tabItem(tabName = "assistance", 
@@ -149,8 +157,22 @@ shinyUI(
         #         ),
         tabItem(tabName = "conclusions", 
                 h2("What This Tells Us:"),
-                imageOutput("year_gif"),
-                plotOutput("corr_plot")
+                fluidRow(
+                  column(width = 4, box(width = 12, "From both looking at the distribution through the years as well as across the states, the data suggests that fire 
+                      emergencies are a major category. Fire emergencies have been increasing since the start of FEMA's documentation, 
+                      and many states are susceptible experiencing emergencies due to fires.", br(), br(), "Because there are so many different disaster categories and some are misleadingly labeled, for example September 11, 
+                      2001 is categorized not as a terrorist incident but as an incident of fire, unlike Virginia who filed the attack on 
+                      the Pentagon on the same day as an incident of terrorism, a correlation plot can be difficult. FEMA depends on each individual governor's 
+                      office to describe and categorie disasters, leading to incongruencies in the data. In addition, there are so few repeatable and predicatble emergency 
+                      categories. Chemical spills have only been documented once, and biological emergencies have only been documented for 2020. 
+                      Earthquakes are sparse in this data set, and tsunamis even rarer.", br(), br(), "The next step for this project is to look at smaller instances, 
+                      ot only the trajesties but every weaker variation of an emergency category. This could include smaller quakes and smaller storms; even though they may 
+                      pass through causing little to no damage, having these intermidiary points paints a more defined picture than only looking at large disasters.")),
+                 column(width = 8, 
+                        box(width = 7, height = 375, offset = 3, title = "Growth of Disaster Count per State, 1953 - 2020", imageOutput("year_gif")),
+                        box(title = "Correlation between Emergency Categories", 
+                            footer = tags$i("Emergency categories have been limited to those with more than 30 instances and which occur across greater than one year."), 
+                            plotOutput("corr_plot", height = 250))))
                 )
       )
     )

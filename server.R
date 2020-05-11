@@ -113,7 +113,7 @@ function(input, output, session){
       gvisGeoChart(locationvar = "State", 
                    colorvar = "Count",
                    options=list(region="US", displayMode="regions", resolution="provinces", width="auto", height="auto",
-                                backgroundColor = "#dbe7ff", colors="['#ffd5e1', '#7c009c']"))
+                                backgroundColor = "#dbe7ff", colors="['#e0d7da', '#c84b4b']"))
   )
   
   output$disasters_table <- DT::renderDataTable(
@@ -124,11 +124,24 @@ function(input, output, session){
   )
   
   output$delay_graph <- renderPlot(
-    data %>% mutate("Delay" = declarationDate - incidentBeginDate) %>%
+    data %>% mutate("Delay" = declarationDate - incidentBeginDate) %>% 
       # data has incorrect inputs (disaster start date happens after the disaster declaration date, because FEMA is psychic)
-      filter(Delay >= 0, Delay != 2671) %>% distinct(femaDeclarationString, declarationDate, Year, incidentType, 
-                                        declarationTitle, incidentBeginDate, incidentEndDate, State, Delay = as.numeric(gsub(" days", "", Delay))) %>% 
-      ggplot(aes(x=Year, y=Delay)) + geom_point()
+      filter(Delay >= 0, Delay != 2671) %>% group_by(Year) %>% 
+      summarise(Count = length(unique(femaDeclarationString)), Avg_Delay = as.numeric(gsub(" days", "", mean(Delay)))) %>% 
+      ggplot(aes(x=Year, y=Avg_Delay)) + geom_line() + ylab("Average Delay (days)") +
+      geom_vline(xintercept = c(1961, 1969, 1974, 1977, 1981, 1989, 1993, 2001, 2009, 2017), colour='grey') +
+      annotate("text", x = c(1957, 1965, 1971.5, 1975.5, 1979, 1985, 1991, 1997, 2005, 2013, 2019 ), y = 66, label = c("Eisenhower", "Kennedy/Johnson", "Nixon", "Ford", "Carter", "Reagon", "Bush Sr.", "Clinton", "Bush Jr.", "Obama", "Trump"), size=2) +
+      annotate("rect", xmin = 1953, xmax = 1961, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
+      annotate("rect", xmin = 1961, xmax = 1969, ymin = 0, ymax = 65, alpha = .2, fill='darkblue') +
+      annotate("rect", xmin = 1969, xmax = 1974, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
+      annotate("rect", xmin = 1974, xmax = 1977, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
+      annotate("rect", xmin = 1977, xmax = 1981, ymin = 0, ymax = 65, alpha = .2, fill='darkblue') +
+      annotate("rect", xmin = 1981, xmax = 1989, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
+      annotate("rect", xmin = 1989, xmax = 1993, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
+      annotate("rect", xmin = 1993, xmax = 2001, ymin = 0, ymax = 65, alpha = .2, fill='darkblue') +
+      annotate("rect", xmin = 2001, xmax = 2009, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
+      annotate("rect", xmin = 2009, xmax = 2017, ymin = 0, ymax = 65, alpha = .2, fill='darkblue') +
+      annotate("rect", xmin = 2017, xmax = 2020, ymin = 0, ymax = 65, alpha = .2, fill='darkred')
   )
   
   output$longest_disaster <- DT::renderDataTable(
@@ -143,7 +156,7 @@ function(input, output, session){
       group_by(incidentType, Year) %>% 
       summarise(Count = length(unique(femaDeclarationString))) %>% 
       pivot_wider(names_from = incidentType, values_from = Count, values_fill = list(Count = 0)) %>% cor() %>% 
-      ggcorrplot(outline.col = "white")
+      ggcorrplot(outline.col = "white", insig = "blank")
   )
   
   output$year_gif <- renderImage(
