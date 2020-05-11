@@ -135,7 +135,7 @@ shinyUI(
                 )),
         tabItem(tabName = "when", 
                 h2("How Has Disaster Recognition Progressed?"),
-                box("Every disaster has an associated start date in addition to a disaster declaration date. The graph to the right looks into how the difference 
+                column(width = 6, box(width = 12, "Every disaster has an associated start date in addition to a disaster declaration date. The graph to the right looks into how the difference 
                     in time has actually lengthened, delaying the release of federal aid and funds for safe-guarding citizens 
                     in disaster zones. Further research would compare certain presidents' and their speed at declaring emergencies during their term.", 
                     br(), br(), p("Missing from the graph on the right is one outlying data point, an emergency declared in Hawaii 
@@ -143,7 +143,11 @@ shinyUI(
                     volcano was already fairly void of human presence, it was only later as the volcano continued to errupt that an emergency was 
                     declared in 1990 to evacuate citizens in the path of actively flowing lava. This delay in need for an emergency 
                     is misleading and therefore excluded from the dataset for this graph.")),
-                box(title = "Average Delay from Incident Start to Emergency Declaration, by President", plotOutput("delay_graph")),
+                    box(width = 12, background = "yellow", solidHeader = TRUE, status = "warning", title = tags$b("HOW FEMA IS IMPROVING"), "After Hurricane Sandy in 2012, President Obama signed the Sandy Recovery Improvement Act of 2013, declaring that 
+                        federally recognized tribal governments have the option to request aid directly from the President. Previously, tribes experiencing hardship had to petition the 
+                        Governor of the state to formally request the President to declare an emergency. And sometimes it wasn't only one Governor requesting or denying tribes aid. For every state the tribe's 
+                        land falls under, a formal petition was required for each state's Governor.")),
+                box(title = "Average Delay from Incident Start to Emergency Declaration, by President", solidHeader = TRUE, status = "primary", plotOutput("delay_graph")),
                 h2("The Longest-Lasting Emergency"),
                 br(),
                 fluidRow(column(width = 12, box(width = 12, DT::dataTableOutput(width = "100%", "longest_disaster"))))
