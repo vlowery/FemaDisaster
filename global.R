@@ -30,7 +30,8 @@ state_name_df <- as.data.frame(usa_sf()) %>% select(abbr = iso_3166_2, "State" =
 data <- left_join(data, state_name_df, by = c("State_abbr" = "abbr"))
 
 # Create DF for State Totals Overall
-state_count <- data %>% group_by(State) %>% summarise("Count" = length(unique(femaDeclarationString)))
+state_count <- data %>% group_by(State) %>% summarise("Count" = length(unique(femaDeclarationString))) %>%
+  mutate("Percentage of Total" = paste0(round(100*Count/sum(Count), 1), "%")) %>% select(1, 3, 2)
 
 # Create DT for Disaster Type Totals
 data_tb <- data %>% group_by("Disaster Type" = incidentType) %>% summarise("Total" = length(unique(femaDeclarationString))) %>% arrange(desc(Total))
@@ -47,8 +48,8 @@ table_longest <- data %>% mutate("Duration" = as.integer(incidentEndDate - incid
 
 # Create fips DF for Leaflet Maps
 polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
-# test_states <- st_sf(left_join(state_count, polygon_df, by = c("State")))
-# 
+
+ 
 # # CREATE ANIMATION
 # # 1. Create Function to be able to add year tallies as each year passes
 # sum_years <- function(year_vector){
@@ -77,8 +78,22 @@ country_shape <- data %>% select(State) %>% unique() %>% left_join(., polygon_df
 # 
 # # 6. Output .gif
 # tmap_animation(tm = year_anim, filename = "year_anim.gif", width = 1000, height = 700, delay=19)
-# 
-# 
-# 
+
+
+
+
+# To accomodate emergencies labeled as "Statewide" being weighted only once
+county_count <- data.frame("Count" = c(254, 159, 133, 120, 115, 105, 102, 100, 99, 95, 93, 92, 88, 87, 83, 82, 
+                                       77, 75, 72, 67, 67, 67, 66, 64, 64, 62, 58, 56, 55, 53, 46, 44,
+                                       39, 36, 33, 29, 29, 24, 23, 21, 17, 16, 15, 14, 14, 10, 8, 5, 5, 3),
+                           "State" = c("Texas", "Georgia", "Virginia", "Kentucky", "Missouri", "Kansas",
+                                        "Illinois", "North Carolina", "Iowa", "Tennessee", "Nebraska",  "Indiana", "Ohio", "Minnesota", "Michigan", "Mississippi",
+                                        "Oklahoma", "Arkansas", "Wisconsin", "Alabama", "Florida", "Pennsylvania", "South Dakota", "Colorado", "Louisiana", "New York",
+                                        "California", "Montana", "West Virginia", "North Dakota", "South Carolina", "Idaho", "Washington", "Oregon", "New Mexico", "Alaska",
+                                        "Utah", "Maryland", "Wyoming", "New Jersey", "Nevada", "Maine", "Arizona", "Massachusetts", "Vermont", "New Hampshire", "Connecticut",
+                                        "Hawaii", "Rhode Island", "Delaware"))
+
+
+
 
 

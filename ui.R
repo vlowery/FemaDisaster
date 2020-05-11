@@ -32,7 +32,7 @@ shinyUI(
                                                               (FEMA) mission was clear, and their mission statement just as short: 'Helping people before, during, 
                                                               and after disasters'. While officially organized 41 years ago, their records date back to emergencies 
                                                               declared as early as January 1, 1953."), p("This project will disect the organization's allocation of 
-                                                              emergency resources, aiming to find patterns in disasters. If a pattern can be detected, and thus a 
+                                                              emergency resources for the more than 4,000 registered emergencies, aiming to find patterns in disasters. If a pattern can be detected, and thus a 
                                                               disaster can be predicted, funds could be reallocated and possibly saved by proactively safe-guarding 
                                                               the possible disaster zones. ")),
                                                            br(),
@@ -45,7 +45,7 @@ shinyUI(
                              of news channels and papers longer, they occur far less frequently than the average bad storm. Additionally, hurricanes come with a considerable 
                              amount of notice, unlike flash floods. Interestingly, a new category established this year, the 'biological disaster', is already ranked seventh 
                              place in total emergency declarations due to COVID-19."),
-                         box(width = 4, DT::dataTableOutput("disasters_table"))
+                         box(width = 4, title = "Declaration Tallies for Emergency Categories", DT::dataTableOutput("disasters_table"))
                 ),
                 h2("What Constitutes an Emergency"),
                 fluidRow(
@@ -76,14 +76,14 @@ shinyUI(
                 fluidPage(
                   h2("Total Emergencies by Year"),
                   fluidRow(
-                    box(width = 4, plotOutput("totals_yearly")),
+                    box(width = 5, plotOutput("totals_yearly")),
                     box(width = 4, "FEMA assigns a unique ID number to each emergency declared. This model to the left shows the tally of every emergency declaration from the year 1953 to May 2020. 
                     There is a general increase in emergencies declared, however, three years in particular 
-                    saw an incredible rise in emergencies. A total of 147 emergencies were declared in 1996, a considerable jump from all years prior. 2011 also saw a jump in case numbers, 
-                    in fact double the previous year's count. And within the first five months of 2020, over 177 emergencies have been declared, mostly because of complications from COVID-19. 
+                    saw an incredible rise in emergencies. A total of 159 emergencies were declared in 1996, a considerable jump from all years prior. 2011 also saw a jump in case numbers, 
+                    in fact more than double the previous year's count. And within the first five months of 2020, over 154 emergencies have been declared, mostly because of complications from COVID-19. 
                     Excluding these three years, the mean emergency count is ", round(mean_yearly_emrg), " per year.")),
                   fluidRow(
-                    box(width = 4, title = "REFRAMING BY TOTAL COUNTIES AFFECTED", collapsible = TRUE, collapsed = TRUE, status = "danger", solidHeader = TRUE, 
+                    box(width = 5, title = "REFRAMING BY TOTAL COUNTIES AFFECTED", collapsible = TRUE, collapsed = TRUE, status = "danger", solidHeader = TRUE, 
                         plotOutput("reframe"), p(tags$b("Hurricane Katrina and COVID-19 drastically increase 2005 and 2020 respectively."))),
                     box(width = 4, "If we reframe our look to counting total individual counties affected by disasters rather than 
                     unique FEMA disaster IDs, which can cover one to hundreds of counties under one ID, we see two distinct years stand out. 
@@ -91,7 +91,8 @@ shinyUI(
                         Katrina, and 2020, as COVID-19 spreads far and wide throughout the country.", br(), "Additional analysis exploring population count rather than FEMA ID counts 
                         will be added to further identify the weight of each emergency by citizens compromised. This optimistically will balance the fact that Texas, a very large 
                         state but with a smaller population density than say parts of New York or Florida, will possibly be more likely to expereince emergencies, however the 
-                        effects of certain disasters may affect far fewer than if the same disaster were to occur in another state.")),
+                        effects of certain disasters may affect far fewer than if the same disaster were to occur in another state.", br(), br(), "It's important to keep in mind that this visual is an approxiamte. 
+                        Emergencies labeled 'Statewide' have been weighted by their count of counties. In other cases, emergency documentation lists specific counties affected, and for those cases the explicit county count has been used.")),
                   h2("What's Happening in 1996, 2011, and 2020"),
                   fluidRow(
                     box(width = 2, title = "1996", "For Texas, 1996 was a year of one fire after another. First in February, a particularly large grass fire burned out of control, 
@@ -114,11 +115,14 @@ shinyUI(
                 fluidPage(
                   fluidRow(h2("Total Emergencies by State")),
                   fluidRow(
-                    box(width= 3, "According to the table on the far right, Texas takes the lead with the most emergencies recorded since 1953 with a total of 358 emergency declarations.
+                    column(width = 3, box(width = 12, "According to the table on the far right, Texas takes the lead with the most emergencies recorded since 1953 with a total of 358 emergency declarations.
                         Trailing only a few counts behind is California with 323 total emergencies.", br(), br(), "The next two states, Oklahoma and Washington, might come as a surprise in the 
                         list before the hurricane-prone state of Florida. To dive deeper in what specifically is happening in these top five states, the section below disects top disaster categories for each state."),
+                          infoBox(width = 12, fill = TRUE, color = "yellow", title = "Largest State (area)", subtitle = "17.5%", value = "Alaska"),
+                          infoBox(width = 12, fill = TRUE, color = "yellow", title = "Second Largest", subtitle = "7%", value = "Texas"),
+                          infoBox(width = 12, fill = TRUE, color = "yellow", title = "Third Largest", subtitle = "4%", value = "California")),
                     box(title = "Total Emergencies by State, 1953 - 2020", width = 5, htmlOutput(width = "auto", "totals_map")),
-                  box(width=4, DT::dataTableOutput("totals_table"))),
+                    box(width=4, DT::dataTableOutput("totals_table"))),
                   h2("What's Happening in States with Higher Counts?"),
                   fluidRow(
                     box(plotOutput(height = 700, "five_states")),
@@ -139,7 +143,7 @@ shinyUI(
                     volcano was already fairly void of human presence, it was only later as the volcano continued to errupt that an emergency was 
                     declared in 1990 to evacuate citizens in the path of actively flowing lava. This delay in need for an emergency 
                     is misleading and therefore excluded from the dataset for this graph.")),
-                box(plotOutput("delay_graph")),
+                box(title = "Average Delay from Incident Start to Emergency Declaration, by President", plotOutput("delay_graph")),
                 h2("The Longest-Lasting Emergency"),
                 br(),
                 fluidRow(column(width = 12, box(width = 12, DT::dataTableOutput(width = "100%", "longest_disaster"))))

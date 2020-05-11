@@ -12,7 +12,9 @@ function(input, output, session){
   )
   
   output$reframe <- renderPlot(
-    data %>% group_by(Year) %>% summarise(Count = n()) %>% ggplot(aes(x=Year, y=Count)) + 
+    data %>% group_by(Year, State, designatedArea) %>% summarise(Tally = n()) %>% left_join(., county_count) %>% 
+      mutate(Tally = ifelse(designatedArea == "Statewide", Count, Tally)) %>% group_by(Year) %>% summarise(Count = n()) %>% 
+      ggplot(aes(x=Year, y=Count)) + 
       geom_col(aes(fill=ifelse(Year == 2005|Year==2020, "#008080", "#ce412a"))) + 
       ylab("Emergency Count") + ggtitle("Total Emergency Count by Counties Affected") + 
       theme(legend.position = "none") + geom_text(aes(label = ifelse(Year == 2005|Year==2020, Count, "")),  vjust = -0.5) +
@@ -29,7 +31,6 @@ function(input, output, session){
                    options=list(width="400px", height="350px", 
                                 title = "Proportions of Emergencies, 1996",
                                 chartArea= "{left:40, top:30, bottom:0, right:0}", 
-                                #slices="[{}, {offset: .2}, {}, {}, {}, {offset: .2}, {}]", 
                                 colors="['#ce412a', '#001489', '#c69c6e', '#ffc2cd', '#008080', '#dbe7ff', '#00ffff']"))
   )
   
@@ -51,7 +52,6 @@ function(input, output, session){
                    options=list(width="400px", height="350px",
                                 title = "Proportions of Emergencies, 2011",
                                 chartArea= "{left:40, top:30, bottom:0, right:0}", 
-                                #slices="[{}, {offset: .2}, {}, {}, {}, {offset: .2}, {offset: .3}]", 
                                 colors="['#ffc2cd', '#c69c6e', '#ce412a', '#001489', '#008080', '#dbe7ff', '#00ffff']"))
   )
   
@@ -129,9 +129,9 @@ function(input, output, session){
       # data has incorrect inputs (disaster start date happens after the disaster declaration date, because FEMA is psychic)
       filter(Delay >= 0, Delay != 2671) %>% group_by(Year) %>% 
       summarise(Count = length(unique(femaDeclarationString)), Avg_Delay = as.numeric(gsub(" days", "", mean(Delay)))) %>% 
-      ggplot(aes(x=Year, y=Avg_Delay)) + geom_line() + ylab("Average Delay (days)") +
+      ggplot(aes(x=Year, y=Avg_Delay)) + geom_line(arrow = arrow(angle = 30, ends = "last", type = "closed", length = unit(0.15, "inches"))) + ylab("Average Delay (days)") +
       geom_vline(xintercept = c(1961, 1969, 1974, 1977, 1981, 1989, 1993, 2001, 2009, 2017), colour='grey') +
-      annotate("text", x = c(1957, 1965, 1971.5, 1975.5, 1979, 1985, 1991, 1997, 2005, 2013, 2019 ), y = 66, label = c("Eisenhower", "Kennedy/Johnson", "Nixon", "Ford", "Carter", "Reagon", "Bush Sr.", "Clinton", "Bush Jr.", "Obama", "Trump"), size=2) +
+      annotate("text", x = c(1957, 1965, 1971.5, 1975.5, 1979, 1985, 1991, 1997, 2005, 2013, 2019 ), y = 66, label = c("Eisenhower", "Kennedy/\nJohnson", "Nixon", "Ford", "Carter", "Reagon", "Bush Sr.", "Clinton", "Bush Jr.", "Obama", "Trump"), size=3) +
       annotate("rect", xmin = 1953, xmax = 1961, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
       annotate("rect", xmin = 1961, xmax = 1969, ymin = 0, ymax = 65, alpha = .2, fill='darkblue') +
       annotate("rect", xmin = 1969, xmax = 1974, ymin = 0, ymax = 65, alpha = .2, fill='darkred') +
