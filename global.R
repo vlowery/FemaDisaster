@@ -5,11 +5,10 @@ library(googleVis)
 library(DT)
 library(lubridate)
 library(albersusa)
-library(sf)
 library(ggthemes)
-library(tmap)
+# library(tmap)
 library(ggcorrplot)
-library(magick)
+# library(magick)
 
 # Load data
 data <- read.csv("./data/DisasterDeclarationsSummaries.csv", stringsAsFactors = FALSE)
@@ -47,7 +46,7 @@ table_longest <- data %>% mutate("Duration" = as.integer(incidentEndDate - incid
   head(10)
 
 # Create fips DF for Leaflet Maps
-polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
+# polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
 
  
 # # CREATE ANIMATION
@@ -69,7 +68,7 @@ polygon_df <- usa_sf() %>% select(fips_state, "State" = name, geometry)
 #   left_join(., polygon_df, by = c("State")) %>% st_sf() %>% ungroup()
 # 
 # # 4. Create shape file of US States
-country_shape <- data %>% select(State) %>% unique() %>% left_join(., polygon_df, by = c("State")) %>% st_sf()
+# country_shape <- data %>% select(State) %>% unique() %>% left_join(., polygon_df, by = c("State")) %>% st_sf()
 # 
 # # 5. Create the animation maps
 # year_anim <- tm_shape(country_shape) + tm_polygons() + tm_shape(year_count) +

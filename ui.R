@@ -36,7 +36,7 @@ shinyUI(
                                                               disaster can be predicted, funds could be reallocated and possibly saved by proactively safe-guarding 
                                                               the possible disaster zones. ")),
                                                            br(),
-                                                           h5("Research and modelling by Victoria Lowery."))))
+                                                           h5("Research and modeling by Victoria Lowery."))))
                 ),
         tabItem(tabName = "disaster_types",
                 h2("Most Common Emergencies"),
@@ -67,7 +67,7 @@ shinyUI(
                   box(width = 3, radioButtons("radio1", label = h3("Select Disaster Type:"),
                                                      choices = sort(unique(data$incidentType)), 
                                                      selected = "Hurricane")),
-                  box(title = textOutput("text1"), solidHeader = TRUE, status = "warning", column(width = 12, tags$b("Distribution by Year for Selected Emergency"),
+                  box(title = textOutput("text1"), solidHeader = TRUE, status = "warning", column(align = "center", width = 12, tags$b("Distribution by Year for Selected Emergency"),
                                                                                                   plotOutput("disaster_chart"), br(), tags$b("The United States: Distribution of 
                                                                                                                                              Selected Emergency, 1953 - 2020"), 
                                                                                                   htmlOutput(width = "auto", "disaster_map")))),
@@ -99,30 +99,31 @@ shinyUI(
                         devastating not acres but miles of farms, homes, and land. Another particularly bad fire, Texas' Little Cypress Fire, was contained by April, 
                         however many other fires continued to ignite. The state continued to burn into the hottest months of summer leading the President, George Bush, to declare a federal disaster in the state."),
                     box(width = 5, htmlOutput("pie_1996")),
-                    box(width = 5, title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", plotOutput("map_1996"))),
+                    column(width = 5,box(width = 12, align = "center", title = "Distribution of Emergencies Declared, 1996", solidHeader = TRUE, status = "danger", htmlOutput("map_1996")))),
                   fluidRow(
                     box(width = 2, title = "2011", "2011 broke many records, including the most destructive fire in Texas' history, the Bastrop County Complex fire. 
                         In total, Texas comprised 47% of all acreage burned in the United States in 2011[1].", 
                         br(), br(), h6("[1] Tripp, Leslie; Gallman, Stephanie (April 19, 2011). 'Arrest made in connection with Texas wildfire near Austin'. CNN.com. Retrieved 2011-04-18.")),
                     box(width = 5, htmlOutput("pie_2011")),
-                    box(width = 5, title = "Distribution of Emergencies Declared, 2011", solidHeader = TRUE, status = "danger", plotOutput("map_2011"))),
+                    column(width = 5, box(width = 12, align = "center", title = "Distribution of Emergencies Declared, 2011", solidHeader = TRUE, status = "danger", htmlOutput("map_2011")))),
                   fluidRow(
                     box(width = 2, title = "2020", "COVID-19 has overtaken nearly all of 2020's registered emergencies."),
                     box(width = 5, htmlOutput("pie_2020")),
-                    box(width = 5, title = "Distribution of Emergencies Declared, 2020", solidHeader = TRUE, status = "danger", plotOutput("map_2020")))
+                    column(width = 5, box(width = 12, align = "center", title = "Distribution of Emergencies Declared, 2020", solidHeader = TRUE, status = "danger", htmlOutput("map_2020"))))
                   )),
         tabItem(tabName = "states",
                 fluidPage(
                   fluidRow(h2("Total Emergencies by State")),
                   fluidRow(
-                    column(width = 3, box(width = 12, "According to the table on the far right, Texas takes the lead with the most emergencies recorded since 1953 with a total of 358 emergency declarations.
+                    column(width = 5, box(width = 12, "According to the table on the right, Texas takes the lead with the most emergencies recorded since 1953 with a total of 358 emergency declarations.
                         Trailing only a few counts behind is California with 323 total emergencies.", br(), br(), "The next two states, Oklahoma and Washington, might come as a surprise in the 
                         list before the hurricane-prone state of Florida. To dive deeper in what specifically is happening in these top five states, the section below disects top disaster categories for each state."),
+                           box(align = "center", title = "Total Emergencies by State, 1953 - 2020", width = 12, htmlOutput(width = "100%", "totals_map"))),
+                    box(width=4, DT::dataTableOutput("totals_table")),
+                    column(width = 3, 
                           infoBox(width = 12, fill = TRUE, color = "yellow", title = "Largest State (area)", subtitle = "17.5%", value = "Alaska"),
                           infoBox(width = 12, fill = TRUE, color = "yellow", title = "Second Largest", subtitle = "7%", value = "Texas"),
-                          infoBox(width = 12, fill = TRUE, color = "yellow", title = "Third Largest", subtitle = "4%", value = "California")),
-                    box(title = "Total Emergencies by State, 1953 - 2020", width = 5, htmlOutput(width = "auto", "totals_map")),
-                    box(width=4, DT::dataTableOutput("totals_table"))),
+                          infoBox(width = 12, fill = TRUE, color = "yellow", title = "Third Largest", subtitle = "4%", value = "California"))),
                   h2("What's Happening in States with Higher Counts?"),
                   fluidRow(
                     box(plotOutput(height = 700, "five_states")),
@@ -166,18 +167,24 @@ shinyUI(
         tabItem(tabName = "conclusions", 
                 h2("What This Tells Us:"),
                 fluidRow(
-                  column(width = 4, box(width = 12, "From both looking at the distribution through the years as well as across the states, the data suggests that fire 
+                  column(width = 5, box(width = 12, "From both looking at the distribution through the years as well as across the states, the data suggests that fire 
                       emergencies are a major category. Fire emergencies have been increasing since the start of FEMA's documentation, 
-                      and many states are susceptible experiencing emergencies due to fires.", br(), br(), "Because there are so many different disaster categories and some are misleadingly labeled, for example September 11, 
-                      2001 is categorized not as a terrorist incident but as an incident of fire, unlike Virginia who filed the attack on 
-                      the Pentagon on the same day as an incident of terrorism, a correlation plot can be difficult. FEMA depends on each individual governor's 
-                      office to describe and categorie disasters, leading to incongruencies in the data. In addition, there are so few repeatable and predicatble emergency 
-                      categories. Chemical spills have only been documented once, and biological emergencies have only been documented for 2020. 
-                      Earthquakes are sparse in this data set, and tsunamis even rarer.", br(), br(), "The next step for this project is to look at smaller instances, 
-                      ot only the trajesties but every weaker variation of an emergency category. This could include smaller quakes and smaller storms; even though they may 
-                      pass through causing little to no damage, having these intermidiary points paints a more defined picture than only looking at large disasters.")),
-                 column(width = 8, 
-                        box(width = 7, height = 375, offset = 3, title = "Growth of Disaster Count per State, 1953 - 2020", imageOutput("year_gif")),
+                      and many states are susceptible to experiencing emergencies due to fires.", br(), br(), "Because there are so many different disaster categories 
+                      and some are misleadingly labeled, a correlation plot can be difficult to construct and most likely unreliable. For example September 11, 
+                      2001 is categorized not as a terrorist incident but as an incident of fire in New York, unlike Virginia who filed the attack on 
+                      the Pentagon as an incident of terrorism. FEMA depends on each individual governor's 
+                      office to describe and categorize disasters when filing for emergency relief, leading to incongruencies in the data. In addition, multiple categories have only been observed during a single year, or conversely, events of a similar nature are labeled under changing names.  
+                      Earthquakes are sparse in this data set, tsunamis even rarer, and chemical spills have only been documented once. For categories changing names, biological emergencies have only been documented for 2020 even though multiple 
+                      emergencies were declared previously due to a Zika outbreak. Zika emergencies, however, are categorized under 'Other'. 
+                      ", br(), br(), "The next step for this project is to look at smaller instances, 
+                      not only the tragedies but also every milder observation for each emergency category. This would include smaller quakes and smaller storms; even though they may 
+                      pass through causing little to no damage, having these intermediary points could paint a more defined picture than only looking at large disasters. In addition, our correlation plot 
+                      could become much stronger in exposing relationships between certain emergencies.", br(), br(), "After increasing the breadth of emergency observation data, I 
+                      would also like to add population count and density to identify priority areas to protect. As we saw previously, Alaska accounts for more than 17% of total land area in the U.S., however it 
+                      makes up only 1.7% of emergency declarations. Including population count would help guide the focus on where to increase preventative measures first. And finally, I aim to add the 
+                      average monetary cost. FEMA is funded directly by tax-payer money, so to focus in on high-cost emergencies would both eliminate damage costs for citizens but also free up tax-payer money for other programs.")),
+                 column(width = 7, 
+                        box(width = 8, align = "center", height = 375, offset = 3, title = "Growth of Disaster Count per State, 1953 - 2020", imageOutput("year_gif")),
                         box(title = "Correlation between Emergency Categories", 
                             footer = tags$i("Emergency categories have been limited to those with more than 30 instances and which occur across greater than one year."), 
                             plotOutput("corr_plot", height = 250))))

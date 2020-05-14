@@ -34,16 +34,24 @@ function(input, output, session){
                                 colors="['#ce412a', '#001489', '#c69c6e', '#ffc2cd', '#008080', '#dbe7ff', '#00ffff']"))
   )
   
-  output$map_1996 <- renderPlot(
+  output$map_1996 <- renderGvis(
     data %>% filter(Year == 1996) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
-      left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
-      tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
+      gvisGeoChart(locationvar = "State", colorvar = "Count", 
+                   options = list(region="US", displayMode="regions", 
+                                  resolution="provinces", width="auto", height="auto", 
+                                  backgroundColor = "#dbe7ff", colors="['#e0d7da', '#c84b4b']"))
+    # left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
+    # tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
   )
   
-  output$map_2011 <- renderPlot(
+  output$map_2011 <- renderGvis(
     data %>% filter(Year == 2011) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
-      left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
-      tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
+      gvisGeoChart(locationvar = "State", colorvar = "Count", 
+                   options = list(region="US", displayMode="regions", 
+                                  resolution="provinces", width="auto", height="auto", 
+                                  backgroundColor = "#dbe7ff", colors="['#e0d7da', '#c84b4b']"))
+      # left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
+      # tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + tm_borders() + tm_shape(country_shape) + tm_borders()
   )
   
   output$pie_2011 <- renderGvis(
@@ -55,11 +63,15 @@ function(input, output, session){
                                 colors="['#ffc2cd', '#c69c6e', '#ce412a', '#001489', '#008080', '#dbe7ff', '#00ffff']"))
   )
   
-  output$map_2020 <- renderPlot(
+  output$map_2020 <- renderGvis(
     data %>% filter(Year == 2020) %>% group_by(State, incidentType) %>% summarise(Count = length(unique(femaDeclarationString))) %>% 
-      left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
-      tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + 
-      tm_borders() + tm_shape(country_shape) + tm_borders()
+      gvisGeoChart(locationvar = "State", colorvar = "Count", 
+                   options = list(region="US", displayMode="regions", 
+                                  resolution="provinces", width="auto", height="auto", 
+                                  backgroundColor = "#dbe7ff", colors="['#e0d7da', '#c84b4b']"))
+      # left_join(., polygon_df, by = c("State")) %>% st_sf() %>% 
+      # tm_shape() + tm_fill("Count", palette = "Reds", contrast = c(0.2, 0.9), title = "Emergency Totals") + 
+      # tm_borders() + tm_shape(country_shape) + tm_borders()
   )
   
   output$pie_2020 <- renderGvis(

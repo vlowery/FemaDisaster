@@ -1,0 +1,13 @@
+name: fema_disaster_trends
+title: fema_disaster_trends
+username:
+account: vlowery
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2295268
+bundleId: 3144339
+url: https://vlowery.shinyapps.io/fema_disaster_trends/
+when: 1589408443.76073
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|Scratch_Sheet.R|data/.DS_Store
